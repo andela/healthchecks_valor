@@ -1,4 +1,5 @@
 # healthchecks
+[![CircleCI](https://circleci.com/gh/judynjagi/Qi.svg?style=svg)](https://circleci.com/gh/judynjagi/Qi)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
