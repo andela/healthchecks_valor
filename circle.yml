@@ -13,3 +13,7 @@ dependencies:
 
   post:
     - coveralls
+
+test:
+  pre:
+    - ./manage.py test
