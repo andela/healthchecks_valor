@@ -1,5 +1,6 @@
 # healthchecks
 [![CircleCI](https://circleci.com/gh/judynjagi/Qi.svg?style=svg)](https://circleci.com/gh/judynjagi/Qi)
+[![Coverage Status](https://coveralls.io/repos/github/andela/healthchecks_valor/badge.svg?branch=develop)](https://coveralls.io/github/andela/healthchecks_valor?branch=develop)
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
