@@ -65,18 +65,21 @@ class CreateCheckTestCase(BaseTestCase):
         ### Make the post request with a missing body and get the response
         #r = {'status_code': 400, 'error': "wrong api_key"}
         ### This is just a placeholder variable
-        """ Check error received when request body is empty"""
+        """ New check created without name or tags for empty body"""
         payload = {}
-        r = self.post(payload)
-        self.assertEqual(r.status_code, 400)
-        self.assertEqual(r.json()["error"], "wrong api_key")
+        r = self.client.post(self.URL,payload,HTTP_X_API_KEY='abc',
+                                content_type="application/json")
+        self.assertEqual(r.status_code, 201)
+
+        self.assertEqual(r.json()["name"], "")
+
 
     def test_it_handles_invalid_json(self):
         ### Make the post request with invalid json data type
         URL = "/api/v1/checks/"
         payload = " This is an invalid data type"
         #r = {'status_code': 400, 'error': "could not parse request body"}
-        """ Check error received when request bodi is not json"""
+        """ Check error received when request body is not json"""
         r = self.client.post(URL, payload, HTTP_X_API_KEY='abc',
                                 content_type="application/json")
         self.assertEqual(r.status_code, 400)
@@ -94,6 +97,39 @@ class CreateCheckTestCase(BaseTestCase):
         self.post({"api_key": "abc", "name": False},
                   expected_error="name is not a string")
 
-    #TODO: Understand code base better to implement the below tests
     ### Test for the assignment of channels
+    def test_channel_assignment(self):
+        r = self.post({
+            "api_key": "abc",
+            "name": "channel_test",
+            "tags": "bar,baz",
+            "timeout": 3600,
+            "grace": 60,
+            "channels": "*"
+        })
+        channels = Channel.objects.filter(user = self.alice)
+        for channel in channels:
+            print(channel)
+
     ### Test for the 'timeout is too small' and 'timeout is too large' errors
+    """ Minimum timeout value is 60"""
+    def test_timeout_too_small(self):
+        r = self.post({
+            "api_key": "abc",
+            "name": "small",
+            "tags": "bar,baz",
+            "timeout": 59,
+            "grace": 60
+        })
+        self.assertEqual(r.json()["error"],"timeout is too small")
+
+    """ Maximum timeout value is 604800 """
+    def test_timeout_too_large(self):
+        r = self.post({
+            "api_key": "abc",
+            "name": "small",
+            "tags": "bar,baz",
+            "timeout": 604801,
+            "grace": 60
+        })
+        self.assertEqual(r.json()["error"],"timeout is too large")
