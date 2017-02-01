@@ -52,18 +52,24 @@ class ListChecksTestCase(BaseTestCase):
 
         alice1 = checks["Alice 1"]
         alice2 = checks["Alice 2"]
-        list1 = [alice1["timeout"], alice1["grace"],
-                            alice1["ping_url"], alice1["status"],
-                            alice1["last_ping"].replace("T"," "),
-                            alice1["n_pings"], alice1["pause_url"]]
-        list2 = [alice2["timeout"], alice2["grace"],
-                            alice2["ping_url"], alice2["status"],
-                            alice2["last_ping"].replace("T"," "),
-                            alice2["n_pings"], alice2["pause_url"]]
+
+        list1 = [
+                    alice1["timeout"], alice1["grace"],
+                    alice1["ping_url"], alice1["status"],
+                    alice1["last_ping"].replace("T"," "),
+                    alice1["n_pings"], alice1["pause_url"]
+                ]
+        list2 = [
+                    alice2["timeout"], alice2["grace"],
+                    alice2["ping_url"], alice2["status"],
+                    alice2["last_ping"].replace("T"," "),
+                    alice2["n_pings"], alice2["pause_url"]
+                ]
         a1_pause = settings.SITE_ROOT + reverse("hc-api-pause", args = [str(self.a1.code)])
         a2_pause = settings.SITE_ROOT + reverse("hc-api-pause", args = [str(self.a2.code)])
 
         time_ping = str(self.now).replace("T"," ")
+
         self.assertListEqual(list1,[3600, 900,
                             settings.PING_ENDPOINT + str(self.a1.code), "new",
                             time_ping, 1, a1_pause
