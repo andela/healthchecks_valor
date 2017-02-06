@@ -13,8 +13,8 @@ class AddCheckTestCase(BaseTestCase):
     def test_it_works(self):
         url = "/checks/add/"
         self.client.login(username="alice@example.org", password="password")
-        r = self.client.post(url)
-        self.assertRedirects(r, "/checks/")
+        res = self.client.post(url)
+        self.assertRedirects(res, "/checks/")
         assert Check.objects.count() == 1
 
     ### Test that team access works
@@ -24,5 +24,6 @@ class AddCheckTestCase(BaseTestCase):
         self.client.post(url)
 
         check = Check.objects.get()
-        # Bob is assigned all channels that belong to Alice
+        # Make sure that Bob is assigned all checks that belong to Alice
         self.assertEqual(check.user, self.alice)
+        
