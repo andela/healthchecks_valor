@@ -1,0 +1,20 @@
+machine:
+  python:
+    version: 3.5.2
+
+
+dependencies:
+  pre:
+    - pip install --upgrade pip virtualenv
+
+  override:
+    - pip install -r requirements.txt
+    - pip install coveralls
+
+test:
+  pre:
+    - python manage.py collectstatic --no-input
+  override:
+    - coverage run --omit=*/tests/* --source=hc ./manage.py test --no-input
+  post:
+    - coveralls

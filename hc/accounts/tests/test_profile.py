@@ -17,9 +17,14 @@ class ProfileTestCase(BaseTestCase):
         # profile.token should be set now
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
+
         ### Assert that the token is set
+        self.assertTrue(len(token)>0)
 
         ### Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Set password on healthchecks.io", mail.outbox[0].subject)
+        self.assertIn("Here's a link to set a password for your account on healthchecks.io:", mail.outbox[0].body)
 
     def test_it_sends_report(self):
         check = Check(name="Test Check", user=self.alice)
@@ -28,6 +33,10 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.send_report()
 
         ###Assert that the email was sent and check email content
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual('Monthly Report', mail.outbox[0].subject)
+        self.assertIn('Hello,\n\nThis is a monthly report sent by healthchecks.io', mail.outbox[0].body)
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
@@ -41,10 +50,15 @@ class ProfileTestCase(BaseTestCase):
             member_emails.add(member.user.email)
 
         ### Assert the existence of the member emails
+        self.assertIsNotNone(member_emails)
 
         self.assertTrue("frank@example.org" in member_emails)
 
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+
+        self.assertIn('You have been invited to join alice@example.org on healthchecks.io', mail.outbox[0].subject)
+        self.assertIn('Hello,\n\nalice@example.org invites you to their healthchecks.io account.\n\nYou will be able to manage their existing monitoring checks and set up new\nones. If you already have your own account on healthchecks.io, you will\nbe able to switch between the two accounts.\nTo log into healthchecks.io, please open the link below:', mail.outbox[0].body)
 
     def test_add_team_member_checks_team_access_allowed_flag(self):
         self.client.login(username="charlie@example.org", password="password")
@@ -108,3 +122,19 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     ### Test it creates and revokes API key
+    def test_it_creates_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"create_api_key": ""}
+        response = self.client.post("/accounts/profile/", form)
+        assert response.status_code == 200
+
+        self.alice.profile.refresh_from_db()
+
+    def test_it_revokes_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+        
+        form = {"revoke_api_key": ""}
+        response = self.client.post("/accounts/profile/", form)
+        assert response.status_code == 200
+    
