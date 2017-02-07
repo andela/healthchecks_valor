@@ -56,7 +56,7 @@ class ProfileTestCase(BaseTestCase):
 
         ###Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox), 1)
-        
+
         self.assertIn('You have been invited to join alice@example.org on healthchecks.io', mail.outbox[0].subject)
         self.assertIn('Hello,\n\nalice@example.org invites you to their healthchecks.io account.\n\nYou will be able to manage their existing monitoring checks and set up new\nones. If you already have your own account on healthchecks.io, you will\nbe able to switch between the two accounts.\nTo log into healthchecks.io, please open the link below:', mail.outbox[0].body)
 
@@ -122,4 +122,19 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     ### Test it creates and revokes API key
+    def test_it_creates_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+
+        form = {"create_api_key": ""}
+        response = self.client.post("/accounts/profile/", form)
+        assert response.status_code == 200
+
+        self.alice.profile.refresh_from_db()
+
+    def test_it_revokes_api_key(self):
+        self.client.login(username="alice@example.org", password="password")
+        
+        form = {"revoke_api_key": ""}
+        response = self.client.post("/accounts/profile/", form)
+        assert response.status_code == 200
     
