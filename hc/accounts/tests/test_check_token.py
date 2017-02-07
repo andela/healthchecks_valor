@@ -1,8 +1,9 @@
 from django.contrib.auth.hashers import make_password
-from hc.test import BaseTestCase
-from hc.accounts import views
+
 import json 
 
+from hc.accounts import views
+from hc.test import BaseTestCase
 
 class CheckTokenTestCase(BaseTestCase):
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from hc.accounts.models import Profile
 
+from hc.accounts.models import Profile
 
 class TeamAccessMiddlewareTestCase(TestCase):
 
