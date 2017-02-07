@@ -53,7 +53,6 @@ def _associate_demo_check(request, user):
 
 
 def login(request):
-    #import pdb; pdb.set_trace()
     bad_credentials = False
     if request.method == 'POST':
         form = EmailPasswordForm(request.POST)
