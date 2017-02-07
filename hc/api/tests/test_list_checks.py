@@ -34,21 +34,19 @@ class ListChecksTestCase(BaseTestCase):
         return self.client.get("/api/v1/checks/", HTTP_X_API_KEY="abc")
 
     def test_it_works(self):
-        r = self.get()
+        response = self.get()
         ### Assert the response status code
-        self.assertEqual(r.status_code, 200)
-        doc = r.json()
+        self.assertEqual(response.status_code, 200)
+        doc = response.json()
         self.assertTrue("checks" in doc)
 
         checks = {check["name"]: check for check in doc["checks"]}
 
         ### Assert the expected length of checks
-        """ Assert 2 checks created"""
         self.assertEqual(len(checks), 2)
-
         ### Assert the checks Alice 1 and Alice 2's timeout, grace, ping_url,
         ### status, last_ping, n_pings and pause_url
-        """ Assert All Parameters passed were set"""
+
 
         alice1 = checks["Alice 1"]
         alice2 = checks["Alice 2"]
@@ -84,15 +82,14 @@ class ListChecksTestCase(BaseTestCase):
         bobs_check = Check(user=self.bob, name="Bob 1")
         bobs_check.save()
 
-        r = self.get()
-        data = r.json()
+        response = self.get()
+        data = response.json()
         self.assertEqual(len(data["checks"]), 2)
         for check in data["checks"]:
             self.assertNotEqual(check["name"], "Bob 1")
 
     ### Test that it accepts an api_key in the request
-    """ It does not accept api_key in get request"""
     def test_it_accepts_api_key_in_request(self):
         payload = {"api_key":"abc"}
-        r =self.client.get("/api/v1/checks/", payload)
-        self.assertEqual(r.json()["error"], "wrong api_key")
+        response =self.client.get("/api/v1/checks/", payload)
+        self.assertEqual(response.json()["error"], "wrong api_key")

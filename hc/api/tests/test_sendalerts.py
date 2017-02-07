@@ -22,7 +22,6 @@ class SendAlertsTestCase(BaseTestCase):
 
         result = Command().handle_many()
         assert result, "handle_many should return True"
-        print(result)
 
         handled_names = []
         for args, kwargs in mock.call_args_list:
@@ -40,7 +39,5 @@ class SendAlertsTestCase(BaseTestCase):
         # Expect no exceptions--
         Command().handle_one(check)
 
+
     ### Assert when Command's handle many that when handle_many should return True
-    @patch("hc.api.management.commands.sendalerts.Command.handle_many")
-    def test_it_handles_many(self, mock):
-        Command().handle_many()
