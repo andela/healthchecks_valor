@@ -1,5 +1,6 @@
 from django.test import Client, TestCase
 
+
 from hc.api.models import Check, Ping
 
 
@@ -8,6 +9,7 @@ class PingTestCase(TestCase):
     def setUp(self):
         super(PingTestCase, self).setUp()
         self.check = Check.objects.create()
+        self.csrf_client = Client(enforce_csrf_checks=True)
 
     def test_it_works(self):
         r = self.client.get("/ping/%s/" % self.check.code)
@@ -50,6 +52,8 @@ class PingTestCase(TestCase):
                             HTTP_X_FORWARDED_FOR=ip)
         ping = Ping.objects.latest("id")
         ### Assert the expected response status code and ping's remote address
+        assert r.status_code == 200
+        assert ping.remote_addr == "1.1.1.1"
 
         ip = "1.1.1.1, 2.2.2.2"
         r = self.client.get("/ping/%s/" % self.check.code,
@@ -63,11 +67,32 @@ class PingTestCase(TestCase):
                             HTTP_X_FORWARDED_PROTO="https")
         ping = Ping.objects.latest("id")
         ### Assert the expected response status code and ping's scheme
+        assert r.status_code == 200
+        assert ping.scheme == 'https'
 
     def test_it_never_caches(self):
         r = self.client.get("/ping/%s/" % self.check.code)
         assert "no-cache" in r.get("Cache-Control")
 
     ### Test that when a ping is made a check with a paused status changes status
+    def test_ping_changes_status_of_paused_check(self):
+        self.check.status ="paused"
+        self.check.save()
+        r = self.client.get("/ping/%s/" % self.check.code)
+        check = Check.objects.get(code=self.check.code)
+
+        assert check.status == "up"
+
     ### Test that a post to a ping works
+    def test_post_ping_works(self):
+        r = self.client.post("/ping/%s/" % self.check.code)
+        assert r.status_code == 200
+        ping = Ping.objects.latest("id")
+        assert ping.method == "POST"
+
     ### Test that the csrf_client head works
+    def test_csrf_client_works(self):
+        r = self.csrf_client.head("/ping/%s/" % self.check.code)
+        assert r.status_code == 200
+        ping = Ping.objects.latest("id")
+        assert ping.method == "HEAD"
