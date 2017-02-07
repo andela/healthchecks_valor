@@ -56,6 +56,7 @@ class ProfileTestCase(BaseTestCase):
 
         ###Assert that the email was sent and check email content
         self.assertEqual(len(mail.outbox), 1)
+        
         self.assertIn('You have been invited to join alice@example.org on healthchecks.io', mail.outbox[0].subject)
         self.assertIn('Hello,\n\nalice@example.org invites you to their healthchecks.io account.\n\nYou will be able to manage their existing monitoring checks and set up new\nones. If you already have your own account on healthchecks.io, you will\nbe able to switch between the two accounts.\nTo log into healthchecks.io, please open the link below:', mail.outbox[0].body)
 
