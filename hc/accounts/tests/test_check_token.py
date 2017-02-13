@@ -1,6 +1,6 @@
-from django.contrib.auth.hashers import make_password
-
 import json 
+
+from django.contrib.auth.hashers import make_password
 
 from hc.accounts import views
 from hc.test import BaseTestCase
