@@ -58,7 +58,7 @@ class Profile(models.Model):
         report_period = ''
         now = timezone.now()
         if self.reports_allowed == '1':
-            self.next_report_date = now + timedelta(minutes=1)
+            self.next_report_date = now + timedelta(days=1)
             report_period = 'Daily'
 
         elif self.next_report_date == '2':
