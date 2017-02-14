@@ -29,15 +29,15 @@ class Command(BaseCommand):
 
     def handle_one_run(self):
         now = timezone.now()
-        month_before = now - timedelta(days=30)
-
+        # month_before = now - timedelta(days=30)
         report_due = Q(next_report_date__lt=now)
         report_not_scheduled = Q(next_report_date__isnull=True)
 
         q = Profile.objects.filter(report_due | report_not_scheduled)
-        q = q.filter(reports_allowed=True)
-        q = q.filter(user__date_joined__lt=month_before)
+        # q = q.filter(reports_allowed=True)
+        # q = q.filter(user__date_joined__lt=now)
         sent = 0
+
         for profile in q:
             if num_pinged_checks(profile) > 0:
                 self.stdout.write(self.tmpl % profile.user.email)
