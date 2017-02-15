@@ -57,6 +57,9 @@
 .icon-paused:before {
   content: "\e7f7";
 }
+.icon-nag:before {
+  content: "\e000";
+}
 .icon-settings:before {
   content: "\e8b8";
 }
