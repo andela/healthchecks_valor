@@ -552,3 +552,35 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+@login_required
+def unresolved(request):
+    q = Check.objects.filter(user=request.team.user, status="down")
+    checks = list(q)
+
+    counter = Counter()
+    down_tags, grace_tags = set(), set()
+    for check in checks:
+        status = check.get_status()
+        for tag in check.tags_list():
+            if tag == "":
+                continue
+
+            counter[tag] += 1
+
+            if status == "down":
+                down_tags.add(tag)
+            elif check.in_grace_period():
+                grace_tags.add(tag)
+
+    ctx = {
+        "page": "unresolved",
+        "checks": checks,
+        "now": timezone.now(),
+        "tags": counter.most_common(),
+        "down_tags": down_tags,
+        "grace_tags": grace_tags,
+        "ping_endpoint": settings.PING_ENDPOINT
+    }
+
+    return render(request, "front/unresolved.html", ctx)
