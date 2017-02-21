@@ -61,11 +61,11 @@ class Profile(models.Model):
             self.next_report_date = now + timedelta(days=1)
             report_period = 'Daily'
 
-        elif self.next_report_date == '2':
+        elif self.reports_allowed == '2':
             self.next_report_date = now + timedelta(days=7)
             report_period = 'Weekly'
 
-        elif self.next_report_date == '3':
+        elif self.reports_allowed == '3':
             self.next_report_date = now + timedelta(days=30)
             report_period = 'Monthly'
         self.save()

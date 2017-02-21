@@ -18,6 +18,7 @@ class BaseTestCase(TestCase):
         self.profile.team_access_allowed = True
         self.profile.save()
 
+
         # Bob is on Alice's team and should have access to her stuff
         self.bob = User(username="bob", email="bob@example.org")
         self.bob.set_password("password")
