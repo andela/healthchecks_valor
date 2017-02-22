@@ -54,7 +54,7 @@ class Check(models.Model):
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
-    nag = models.DurationField(null=True)
+    nag_interval = models.DurationField(null=True)
     nag_after = models.DateTimeField(null=True, blank=True)
 
     def name_then_code(self):
@@ -134,11 +134,11 @@ class Check(models.Model):
         return result
 
     def update_nag_after(self):
-        self.nag_after = self.nag_after + self.nag
+        self.nag_after = self.nag_after + self.nag_interval
 
     def check_nag_mode(self):
-        if self.nag:
-            return (self.alert_after + self.nag) < timezone.now()
+        if self.nag_interval:
+            return (self.alert_after + self.nag_interval) < timezone.now()
         return False
 
 class Ping(models.Model):

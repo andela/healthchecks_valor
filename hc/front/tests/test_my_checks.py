@@ -40,7 +40,6 @@ class MyChecksTestCase(BaseTestCase):
         r = self.client.get("/checks/")
 
         # Desktop
-        print(vars(r))
         self.assertContains(r, "icon-down")
 
         # Mobile

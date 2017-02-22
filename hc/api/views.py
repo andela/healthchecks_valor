@@ -28,8 +28,8 @@ def ping(request, code):
 
     check.save()
     check.refresh_from_db()
-    if check.nag != None:
-        check.nag_after = check.alert_after + check.nag
+    if check.nag_interval != None:
+        check.nag_after = check.alert_after + check.nag_interval
         check.save()
 
     ping = Ping(owner=check)

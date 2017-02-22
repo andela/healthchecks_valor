@@ -67,9 +67,9 @@
                 </span>
                 <br />
                 <span class="checks-subline"> 
-                {% if check.nag is not None%}
-                {{ check.nag|hc_duration }}
-                {% endif%}
+                {% if check.nag_interval is not None %}
+                {{ check.nag_interval|hc_duration }}
+                {% endif %}
                 </span>
             </span>
         </td>
