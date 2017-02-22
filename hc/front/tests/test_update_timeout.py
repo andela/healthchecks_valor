@@ -20,7 +20,7 @@ class UpdateTimeoutTestCase(BaseTestCase):
         check = Check.objects.get(code=self.check.code)
         assert check.timeout.total_seconds() == 3600
         assert check.grace.total_seconds() == 60
-        assert check.nag.total_seconds() == 60
+        assert check.nag_interval.total_seconds() == 60
 
     def test_team_access_works(self):
         url = "/checks/%s/timeout/" % self.check.code
