@@ -1,5 +1,5 @@
 {{ check.name_then_code }} is
-{% if check.ping_is_early and check.status == "up"%}
+{% if check.ping_is_early %}
 early
 {%else%}
 {{check.status}}

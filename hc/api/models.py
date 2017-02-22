@@ -130,12 +130,13 @@ class Check(models.Model):
         return result
 
     def ping_is_early(self):
-        pings = Ping.objects.filter(owner = self).order_by('-created')[:2]
-        reverse_grace_period = self.timeout - self.grace
-        if len(pings)==2:
-            ping_difference = pings[0].created - pings[1].created
-            if reverse_grace_period > ping_difference:
-                return True
+        if self.status == "up":
+            pings = Ping.objects.filter(owner=self).order_by('-created')[:2]
+            reverse_grace_period = self.timeout - self.grace
+            if len(pings) == 2:
+                ping_difference = pings[0].created - pings[1].created
+                if reverse_grace_period > ping_difference:
+                    return True
         return False
 
 
@@ -266,6 +267,7 @@ class Channel(models.Model):
 
 
 class Notification(models.Model):
+
     class Meta:
         get_latest_by = "created"
 
