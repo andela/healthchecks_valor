@@ -1,2 +1,6 @@
-{{ check.name_then_code }} is {{ check.status }}
-
+{{ check.name_then_code }} is
+{% if check.ping_is_early %}
+early
+{%else%}
+{{check.status}}
+{%endif%}

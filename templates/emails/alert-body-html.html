@@ -6,7 +6,9 @@
     This is a notification sent by <a href="https://healthchecks.io">healthchecks.io</a>.
     <br />
     The check <strong>{{ check.name_then_code }}</strong>
-    has gone <strong>{{ check.status|upper }}</strong>.
+    {%if check.ping_is_early %}was ran <strong>EARLY</strong>.
+    {% else %}has gone <strong>{{ check.status|upper }}</strong>.
+    {%endif%}
 </p>
 
 <p>Here is a summary of all your checks:</p>

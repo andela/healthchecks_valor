@@ -1,7 +1,11 @@
 Hello,
 
 This is a notification sent by healthchecks.io.
-The check "{{ check.name_then_code }}" has gone {{ check.status }}.
+The check "{{ check.name_then_code }}"
+{% if check.ping_is_early %}
+ran earlier than expected. Please check your cron jobs.
+{% else %}has gone {{ check.status }}.
+{% endif %}
 
 Here is a summary of all your checks:
 
@@ -10,4 +14,3 @@ Here is a summary of all your checks:
 --
 Regards,
 healthchecks.io
-
