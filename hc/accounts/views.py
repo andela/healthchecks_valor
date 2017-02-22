@@ -153,12 +153,14 @@ def profile(request):
             messages.info(request, "The API key has been revoked!")
         elif "show_api_key" in request.POST:
             show_api_key = True
+
         elif "update_reports_allowed" in request.POST:
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
-                profile.reports_allowed = form.cleaned_data["reports_allowed"]
+                profile.reports_allowed = request.POST.get("reports_allowed", '0')
                 profile.save()
                 messages.success(request, "Your settings have been updated!")
+            
         elif "invite_team_member" in request.POST:
             if not profile.team_access_allowed:
                 return HttpResponseForbidden()
@@ -253,7 +255,7 @@ def unsubscribe_reports(request, username):
         return HttpResponseBadRequest()
 
     user = User.objects.get(username=username)
-    user.profile.reports_allowed = False
+    user.profile.reports_allowed = '0'
     user.profile.save()
 
     return render(request, "accounts/unsubscribed.html")
