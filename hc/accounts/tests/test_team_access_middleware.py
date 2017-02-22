@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from hc.accounts.models import Profile
 
+from hc.accounts.models import Profile
 
 class TeamAccessMiddlewareTestCase(TestCase):
 
@@ -11,7 +11,9 @@ class TeamAccessMiddlewareTestCase(TestCase):
         user.save()
 
         self.client.login(username="ned@example.org", password="password")
-        r = self.client.get("/about/")
-        self.assertEqual(r.status_code, 200)
+        response = self.client.get("/about/")
+        self.assertEqual(response.status_code, 200)
 
         ### Assert the new Profile objects count
+        form = {"invite_team_member": "1", "email": "ned@example.org"}
+        self.assertEqual(Profile.objects.count(), 1)
