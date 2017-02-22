@@ -1,7 +1,8 @@
 from django.core import mail
+from django.contrib.auth.models import User
 
 from hc.test import BaseTestCase
-from hc.accounts.models import Member
+from hc.accounts.models import Profile, Member
 from hc.api.models import Check
 
 
@@ -26,13 +27,48 @@ class ProfileTestCase(BaseTestCase):
         self.assertIn("Set password on healthchecks.io", mail.outbox[0].subject)
         self.assertIn("Here's a link to set a password for your account on healthchecks.io:", mail.outbox[0].body)
 
-    def test_it_sends_report(self):
+    def test_it_sends_daily_report(self):
+        self.alice.profile.reports_allowed = '1'
+        self.alice.profile.save()
+
+        check = Check(name="Test Check", user=self.alice)
+        check.save()
+
+        self.alice.profile.send_report()
+        ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual('HealthChecks Report', mail.outbox[0].subject)
+        self.assertIn('Hello,\n\nThis is a Daily report sent by healthchecks.io', mail.outbox[0].body)
+
+    def test_it_sends_weekly_report(self):
+        self.alice.profile.reports_allowed = '2'
+        self.alice.profile.save()
+
         check = Check(name="Test Check", user=self.alice)
         check.save()
 
         self.alice.profile.send_report()
 
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual('HealthChecks Report', mail.outbox[0].subject)
+        self.assertIn('Hello,\n\nThis is a Weekly report sent by healthchecks.io', mail.outbox[0].body)
+
+    def test_it_sends_monthly_report(self):
+        self.alice.profile.reports_allowed = '3'
+        self.alice.profile.save()
+
+        check = Check(name="Test Check", user=self.alice)
+        check.save()
+
+        self.alice.profile.send_report()
+
+        ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual('HealthChecks Report', mail.outbox[0].subject)
+        self.assertIn('Hello,\n\nThis is a Monthly report sent by healthchecks.io', mail.outbox[0].body)
+
+
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual('Monthly Report', mail.outbox[0].subject)
